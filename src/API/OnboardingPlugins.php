@@ -10,6 +10,7 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_Jetpack_Plugin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -157,6 +158,19 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Create an alert notification in response to an error installing a plugin.
+	 *
+	 * @param string $slug The slug of the plugin being installed.
+	 */
+	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
+		if ( 'jetpack' !== $slug ) {
+			return;
+		}
+
+		WC_Admin_Notes_Install_Jetpack_Plugin::possibly_add_install_jetpack_note();
+	}
+
+	/**
 	 * Installs the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
@@ -208,6 +222,8 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 			);
 			wc_admin_record_tracks_event( 'install_plugin_error', $properties );
 
+			$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
+
 			return new \WP_Error(
 				'woocommerce_rest_plugin_install',
 				sprintf(
@@ -232,6 +248,8 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 				'result'        => $result,
 			);
 			wc_admin_record_tracks_event( 'install_plugin_error', $properties );
+
+			$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
 			return new \WP_Error(
 				'woocommerce_rest_plugin_install',
