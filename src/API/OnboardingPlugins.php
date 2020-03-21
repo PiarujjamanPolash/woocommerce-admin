@@ -160,6 +160,8 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 	/**
 	 * Create an alert notification in response to an error installing a plugin.
 	 *
+	 * @todo This should be moved to a filter to make this API more generic and less plugin-specific.
+	 *
 	 * @param string $slug The slug of the plugin being installed.
 	 */
 	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
@@ -511,7 +513,7 @@ class OnboardingPlugins extends \WC_REST_Data_Controller {
 		}
 
 		if ( $has_cbd_industry ) {
-			$url  = 'https://squareup.com/t/f_partnerships/d_referrals/p_woocommerce/c_general/o_none/l_us/dt_alldevice/pr_payments/?route=/solutions/cbd';
+			$url = 'https://squareup.com/t/f_partnerships/d_referrals/p_woocommerce/c_general/o_none/l_us/dt_alldevice/pr_payments/?route=/solutions/cbd';
 		} else {
 			$url = \WooCommerce\Square\Handlers\Connection::CONNECT_URL_PRODUCTION;
 		}
